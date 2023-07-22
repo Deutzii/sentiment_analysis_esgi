@@ -2,6 +2,7 @@ import random
 import time
 import glob
 import os
+import csv
 
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -71,7 +72,7 @@ def collect_urls(driver, urls):
 
                 try:
                     name = product.select_one('h3[class="productBlock_productName"]').text.strip()
-                    print(name)
+                    #print(name)
                 except:
                     pass
 
@@ -79,15 +80,15 @@ def collect_urls(driver, urls):
                     rating = product.select_one('span[class*="visually-hidden"]').text.strip()
                     rating_star = rating.split(' ')[0]
                     rating_nb_reviews = rating.split(' ')[2]
-                    print(rating)
-                    print(rating_star)
-                    print(rating_nb_reviews)
+                    #print(rating)
+                    #print(rating_star)
+                    #print(rating_nb_reviews)
                 except:
                     pass
 
                 try:
                     price = product.select_one('span[class*="productBlock_priceValue"]').text.strip()
-                    print(price)
+                    #print(price)
                 except:
                     pass
             products_info.append((url, name, rating_star, rating_nb_reviews, price))
@@ -430,4 +431,17 @@ def retreive_urls():
             #urls_list.append(parsed_list)
 
     return urls_list
+
+
+def save_as_input_file(df):
+    # Path to the input directory
+    exchange_path = os.path.join(os.curdir, 'exchange')
+    input_path = os.path.join(exchange_path, 'input')
+
+    # Define the file path
+    file_path = os.path.join(input_path, 'input.csv')
+
+    # df.to_csv()
+    df.to_csv(file_path, sep=';', index=False, encoding='utf-8', quoting=csv.QUOTE_ALL)
+
 

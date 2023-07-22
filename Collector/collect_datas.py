@@ -9,8 +9,8 @@ from basic_functions import (
     aggregate_urls,
     aggregate_reviews,
     stack_reviews_list,
-    retreive_urls
-
+    retreive_urls,
+    save_as_input_file
 )
 
 import pandas as pd
@@ -24,11 +24,9 @@ def main():
             "https://www.dermstore.com/hair-care.list",
             "https://www.dermstore.com/makeup.list"
             ]
-    #"https://www.dermstore.com/hair-care.list",
-    # "https://www.dermstore.com/makeup.list"
 
     # Create path
-    PATH = Service("chromedriver.exe")
+    PATH = Service(os.path.join(os.curdir, 'chromedriver.exe'))
 
     # Add options to avoid being detected as a bot
     OPTIONS = Options()
@@ -59,28 +57,16 @@ def main():
     # Set the driver
     driver = webdriver.Chrome(service=PATH, options=OPTIONS)
 
-
-
     # Collect Urls
     products_list = collect_urls(driver, urls)
-    print(products_list)
+    #print(products_list)
     #stack_products_list(products_list)
-
-   # products_list_test = [('https://www.dermstore.com/augustinus-bader-the-rich-cream-50ml/13315093.html', 'Augustinus Bader The Rich Cream 50ml', '4.13', '15', '$290.00'),
-   #                       ('https://www.dermstore.com/sunday-riley-luna-sleeping-night-oil-various-sizes/12913066.html', 'Sunday Riley LUNA Sleeping Night Oil', '4.51', '297', '$34.00')]
-
 
     print("[LOG] Collecting reviews ..")
     # Collect Reviews
     res = collect_reviews(driver, products_list)
 
-    print(res)
-
-
-
-
-#review_url_src, review_stars, review_title, review_thoughts, review_author,
-#review_date, review_verified, review_tup, review_tdown, review_collected_date
+    #print(res)
 
     # Create dataframe and integrate the datas inside the dataframe
     df = pd.DataFrame([item for sublist in res for item in sublist],
@@ -89,7 +75,9 @@ def main():
                                     'review_tdown', 'review_collected_date'])
 
     # df.to_csv()
-    df.to_csv('output.csv', sep=';', index=False, encoding='utf-8', quoting=csv.QUOTE_ALL)
+    #df.to_csv('input.csv', sep=';', index=False, encoding='utf-8', quoting=csv.QUOTE_ALL)
+
+    save_as_input_file(df)
 
 
 if __name__ == "__main__":
